@@ -17,8 +17,8 @@ package com.example.android.pets;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -39,9 +39,12 @@ public class CatalogActivity extends AppCompatActivity {
         data.add("Cat");
         data.add("Baxter");
 
-        ListView listView = findViewById(R.id.list_view_pet);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, data);
-        listView.setAdapter(adapter);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view_pet);
+        LinearLayoutManager layoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+
+        CatalogAdapter adapter = new CatalogAdapter(this, data);
+        recyclerView.setAdapter(adapter);
     }
 }

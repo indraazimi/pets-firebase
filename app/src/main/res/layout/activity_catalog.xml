@@ -19,8 +19,8 @@
     android:layout_height="match_parent"
     tools:context=".CatalogActivity">
 
-    <ListView
-        android:id="@+id/list_view_pet"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_pet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
