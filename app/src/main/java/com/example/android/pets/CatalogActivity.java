@@ -17,6 +17,7 @@ package com.example.android.pets;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -38,11 +39,27 @@ public class CatalogActivity extends AppCompatActivity {
         data.add("Lady");
         data.add("Cat");
         data.add("Baxter");
+        data.add("Toto");
+        data.add("Binx");
+        data.add("Lady");
+        data.add("Cat");
+        data.add("Baxter");
+        data.add("Toto");
+        data.add("Binx");
+        data.add("Lady");
+        data.add("Cat");
+        data.add("Baxter");
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view_pet);
+        recyclerView.setHasFixedSize(true);
+
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
+
+        DividerItemDecoration divider = new DividerItemDecoration(this,
+                layoutManager.getOrientation());
+        recyclerView.addItemDecoration(divider);
 
         CatalogAdapter adapter = new CatalogAdapter(this, data);
         recyclerView.setAdapter(adapter);
