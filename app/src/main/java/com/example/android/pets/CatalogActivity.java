@@ -33,22 +33,22 @@ public class CatalogActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
 
-        ArrayList<String> data = new ArrayList<>();
-        data.add("Toto");
-        data.add("Binx");
-        data.add("Lady");
-        data.add("Cat");
-        data.add("Baxter");
-        data.add("Toto");
-        data.add("Binx");
-        data.add("Lady");
-        data.add("Cat");
-        data.add("Baxter");
-        data.add("Toto");
-        data.add("Binx");
-        data.add("Lady");
-        data.add("Cat");
-        data.add("Baxter");
+        ArrayList<Pet> data = new ArrayList<>();
+        data.add(new Pet("Toto", "Terrier"));
+        data.add(new Pet("Binx", "Bombay"));
+        data.add(new Pet("Lady", "Cocker Spaniel"));
+        data.add(new Pet("Cat", "Tabby"));
+        data.add(new Pet("Baxter", "Border Terrier"));
+        data.add(new Pet("Toto", "Terrier"));
+        data.add(new Pet("Binx", "Bombay"));
+        data.add(new Pet("Lady", "Cocker Spaniel"));
+        data.add(new Pet("Cat", "Tabby"));
+        data.add(new Pet("Baxter", "Border Terrier"));
+        data.add(new Pet("Toto", "Terrier"));
+        data.add(new Pet("Binx", "Bombay"));
+        data.add(new Pet("Lady", "Cocker Spaniel"));
+        data.add(new Pet("Cat", "Tabby"));
+        data.add(new Pet("Baxter", "Border Terrier"));
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view_pet);
         recyclerView.setHasFixedSize(true);

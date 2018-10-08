@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHolder> {
     private Context mContext;
-    private ArrayList<String> mData;
+    private ArrayList<Pet> mData;
 
-    public CatalogAdapter(Context context, ArrayList<String> data) {
+    public CatalogAdapter(Context context, ArrayList<Pet> data) {
         mContext = context;
         mData = data;
     }
@@ -23,13 +23,15 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(
-                android.R.layout.simple_list_item_1, parent, false);
+                R.layout.list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.nameTextView.setText(mData.get(position));
+        Pet pet = mData.get(position);
+        holder.nameTextView.setText(pet.getName());
+        holder.breedTextView.setText(pet.getBreed());
     }
 
     @Override
@@ -39,10 +41,12 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
         final TextView nameTextView;
+        final TextView breedTextView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(android.R.id.text1);
+            nameTextView = itemView.findViewById(R.id.name_text_view);
+            breedTextView = itemView.findViewById(R.id.breed_text_view);
         }
     }
 }
