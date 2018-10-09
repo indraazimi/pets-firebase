@@ -16,4 +16,9 @@ public class Pet {
     public String getBreed() {
         return breed;
     }
+
+    @Override
+    public String toString() {
+        return name + " - " + breed;
+    }
 }

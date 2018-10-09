@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,7 @@ public class CatalogActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
 
-        ArrayList<Pet> data = new ArrayList<>();
+        final ArrayList<Pet> data = new ArrayList<>();
         data.add(new Pet("Toto", "Terrier"));
         data.add(new Pet("Binx", "Bombay"));
         data.add(new Pet("Lady", "Cocker Spaniel"));
@@ -61,7 +62,13 @@ public class CatalogActivity extends AppCompatActivity {
                 layoutManager.getOrientation());
         recyclerView.addItemDecoration(divider);
 
-        CatalogAdapter adapter = new CatalogAdapter(this, data);
+        CatalogAdapter adapter = new CatalogAdapter(this, data, new CatalogAdapter.ClickHandler() {
+            @Override
+            public void onItemClick(int position) {
+                String pet = data.get(position).toString();
+                Toast.makeText(CatalogActivity.this, pet, Toast.LENGTH_SHORT).show();
+            }
+        });
         recyclerView.setAdapter(adapter);
     }
 }
