@@ -16,10 +16,12 @@
 package com.example.android.pets;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,28 +30,20 @@ import java.util.ArrayList;
  * Displays list of pets that were entered and stored in the app.
  */
 public class CatalogActivity extends AppCompatActivity {
+    private ArrayList<Pet> mData;
+    private CatalogAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
 
-        final ArrayList<Pet> data = new ArrayList<>();
-        data.add(new Pet("Toto", "Terrier"));
-        data.add(new Pet("Binx", "Bombay"));
-        data.add(new Pet("Lady", "Cocker Spaniel"));
-        data.add(new Pet("Cat", "Tabby"));
-        data.add(new Pet("Baxter", "Border Terrier"));
-        data.add(new Pet("Toto", "Terrier"));
-        data.add(new Pet("Binx", "Bombay"));
-        data.add(new Pet("Lady", "Cocker Spaniel"));
-        data.add(new Pet("Cat", "Tabby"));
-        data.add(new Pet("Baxter", "Border Terrier"));
-        data.add(new Pet("Toto", "Terrier"));
-        data.add(new Pet("Binx", "Bombay"));
-        data.add(new Pet("Lady", "Cocker Spaniel"));
-        data.add(new Pet("Cat", "Tabby"));
-        data.add(new Pet("Baxter", "Border Terrier"));
+        mData = new ArrayList<>();
+        mData.add(new Pet("Toto", "Terrier"));
+        mData.add(new Pet("Binx", "Bombay"));
+        mData.add(new Pet("Lady", "Cocker Spaniel"));
+        mData.add(new Pet("Cat", "Tabby"));
+        mData.add(new Pet("Baxter", "Border Terrier"));
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view_pet);
         recyclerView.setHasFixedSize(true);
@@ -62,13 +56,22 @@ public class CatalogActivity extends AppCompatActivity {
                 layoutManager.getOrientation());
         recyclerView.addItemDecoration(divider);
 
-        CatalogAdapter adapter = new CatalogAdapter(this, data, new CatalogAdapter.ClickHandler() {
+        mAdapter = new CatalogAdapter(this, mData, new CatalogAdapter.ClickHandler() {
             @Override
             public void onItemClick(int position) {
-                String pet = data.get(position).toString();
+                String pet = mData.get(position).toString();
                 Toast.makeText(CatalogActivity.this, pet, Toast.LENGTH_SHORT).show();
             }
         });
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(mAdapter);
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mData.add(new Pet("Toto", "Terrier"));
+                mAdapter.notifyItemInserted(mData.size()-1);
+            }
+        });
     }
 }
