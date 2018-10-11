@@ -15,13 +15,16 @@
  */
 package com.example.android.pets;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -69,9 +72,34 @@ public class CatalogActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mData.add(new Pet("Toto", "Terrier"));
-                mAdapter.notifyItemInserted(mData.size()-1);
+                addPet();
             }
         });
+    }
+
+    private void addPet() {
+        final View view = getLayoutInflater().inflate(R.layout.dialog_editor, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(CatalogActivity.this);
+        builder.setTitle(R.string.add_pet)
+                .setView(view)
+                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TextView nameTextView = view.findViewById(R.id.name_edit_text);
+                        TextView breedTextView = view.findViewById(R.id.breed_edit_text);
+                        mData.add(new Pet(
+                                nameTextView.getText().toString(),
+                                breedTextView.getText().toString()
+                        ));
+                        mAdapter.notifyItemInserted(mData.size()-1);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create().show();
     }
 }
