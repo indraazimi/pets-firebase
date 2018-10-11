@@ -115,6 +115,11 @@ public class CatalogActivity extends AppCompatActivity {
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_edit:
+                    editPet();
+                    return true;
+            }
             return false;
         }
 
@@ -146,6 +151,37 @@ public class CatalogActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+
+    private void editPet() {
+        final Pet selectedPet = mData.get(mAdapter.getSelectedId().get(0));
+
+        View view = getLayoutInflater().inflate(R.layout.dialog_editor, null);
+        final TextView nameTextView = view.findViewById(R.id.name_edit_text);
+        nameTextView.setText(selectedPet.getName());
+        final TextView breedTextView = view.findViewById(R.id.breed_edit_text);
+        breedTextView.setText(selectedPet.getBreed());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(CatalogActivity.this);
+        builder.setTitle(R.string.edit_pet)
+                .setView(view)
+                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        selectedPet.setName(nameTextView.getText().toString());
+                        selectedPet.setBreed(breedTextView.getText().toString());
+                        mAdapter.notifyItemChanged(mAdapter.getSelectedId().get(0));
+                        mActionMode.finish();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        mActionMode.finish();
                     }
                 });
         builder.create().show();

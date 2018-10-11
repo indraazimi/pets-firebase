@@ -61,6 +61,10 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
         notifyDataSetChanged();
     }
 
+    public ArrayList<Integer> getSelectedId() {
+        return mSelectedId;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder implements
             View.OnClickListener,
             View.OnLongClickListener {
