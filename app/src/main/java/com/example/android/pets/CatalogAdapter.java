@@ -14,11 +14,13 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
     private ClickHandler mClickHandler;
     private Context mContext;
     private ArrayList<Pet> mData;
+    private ArrayList<Integer> mSelectedId;
 
     public CatalogAdapter(Context context, ArrayList<Pet> data, ClickHandler handler) {
         mContext = context;
         mData = data;
         mClickHandler = handler;
+        mSelectedId = new ArrayList<>();
     }
 
     @NonNull
@@ -34,11 +36,29 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
         Pet pet = mData.get(position);
         holder.nameTextView.setText(pet.getName());
         holder.breedTextView.setText(pet.getBreed());
+        holder.itemView.setSelected(mSelectedId.contains(position));
     }
 
     @Override
     public int getItemCount() {
         return mData.size();
+    }
+
+    public void toggleSelection(int dataId) {
+        if (mSelectedId.contains(dataId))
+            mSelectedId.remove(Integer.valueOf(dataId));
+        else
+            mSelectedId.add(dataId);
+        notifyDataSetChanged();
+    }
+
+    public int selectionCount() {
+        return mSelectedId.size();
+    }
+
+    public void resetSelection() {
+        mSelectedId = new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements

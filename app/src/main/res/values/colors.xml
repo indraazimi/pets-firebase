@@ -19,4 +19,6 @@
 
     <!-- Accent color for UI controls like checkboxes and text fields -->
     <color name="colorAccent">#F0514B</color>
+
+    <color name="selectedColor">#E0E0E0</color>
 </resources>

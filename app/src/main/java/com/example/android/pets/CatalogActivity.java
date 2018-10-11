@@ -66,6 +66,15 @@ public class CatalogActivity extends AppCompatActivity {
         mAdapter = new CatalogAdapter(this, mData, new CatalogAdapter.ClickHandler() {
             @Override
             public void onItemClick(int position) {
+                if (mActionMode != null) {
+                    mAdapter.toggleSelection(position);
+                    if (mAdapter.selectionCount() == 0)
+                        mActionMode.finish();
+                    else
+                        mActionMode.invalidate();
+                    return;
+                }
+
                 String pet = mData.get(position).toString();
                 Toast.makeText(CatalogActivity.this, pet, Toast.LENGTH_SHORT).show();
             }
@@ -74,6 +83,7 @@ public class CatalogActivity extends AppCompatActivity {
             public boolean onItemLongClick(int position) {
                 if (mActionMode != null) return false;
 
+                mAdapter.toggleSelection(position);
                 mActionMode = CatalogActivity.this.startSupportActionMode(mActionModeCallback);
                 return true;
             }
@@ -98,6 +108,8 @@ public class CatalogActivity extends AppCompatActivity {
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            mode.setTitle(String.valueOf(mAdapter.selectionCount()));
+            menu.findItem(R.id.action_edit).setVisible(mAdapter.selectionCount() == 1);
             return true;
         }
 
@@ -109,6 +121,7 @@ public class CatalogActivity extends AppCompatActivity {
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             mActionMode = null;
+            mAdapter.resetSelection();
         }
     };
 
