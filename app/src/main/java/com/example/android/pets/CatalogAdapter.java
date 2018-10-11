@@ -15,12 +15,22 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
     private Context mContext;
     private ArrayList<Pet> mData;
     private ArrayList<Integer> mSelectedId;
+    private View mEmptyView;
 
-    public CatalogAdapter(Context context, ArrayList<Pet> data, ClickHandler handler) {
+    public CatalogAdapter(Context context, ArrayList<Pet> data,
+                          View emptyView, ClickHandler handler) {
         mContext = context;
         mData = data;
+        mEmptyView = emptyView;
         mClickHandler = handler;
         mSelectedId = new ArrayList<>();
+    }
+
+    public void updateEmptyView() {
+        if (mData.size() == 0)
+            mEmptyView.setVisibility(View.VISIBLE);
+        else
+            mEmptyView.setVisibility(View.GONE);
     }
 
     @NonNull

@@ -65,7 +65,8 @@ public class CatalogActivity extends AppCompatActivity {
                 layoutManager.getOrientation());
         recyclerView.addItemDecoration(divider);
 
-        mAdapter = new CatalogAdapter(this, mData, new CatalogAdapter.ClickHandler() {
+        View emptyView = findViewById(R.id.empty_view);
+        mAdapter = new CatalogAdapter(this, mData, emptyView, new CatalogAdapter.ClickHandler() {
             @Override
             public void onItemClick(int position) {
                 if (mActionMode != null) {
@@ -150,6 +151,7 @@ public class CatalogActivity extends AppCompatActivity {
                                 nameTextView.getText().toString(),
                                 breedTextView.getText().toString()
                         ));
+                        mAdapter.updateEmptyView();
                         mAdapter.notifyItemInserted(mData.size()-1);
                     }
                 })
@@ -217,6 +219,7 @@ public class CatalogActivity extends AppCompatActivity {
                             mData.remove(currentPetId);
                         }
                         mAdapter.notifyDataSetChanged();
+                        mAdapter.updateEmptyView();
                         mActionMode.finish();
                     }
                 })

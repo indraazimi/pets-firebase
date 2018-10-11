@@ -23,4 +23,5 @@
     <string name="edit_pet">Edit Pet</string>
     <string name="delete_pet">Delete selected pet?</string>
     <string name="delete_pets">Delete selected pets?</string>
+    <string name="empty_view_title_text">It\'s a bit lonely here…\nGet started by adding a pet</string>
 </resources>
