@@ -65,6 +65,13 @@ public class CatalogActivity extends AppCompatActivity {
                 String pet = mData.get(position).toString();
                 Toast.makeText(CatalogActivity.this, pet, Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public boolean onItemLongClick(int position) {
+                String pet = mData.get(position).getName() + " long clicked!";
+                Toast.makeText(CatalogActivity.this, pet, Toast.LENGTH_SHORT).show();
+                return true;
+            }
         });
         recyclerView.setAdapter(mAdapter);
 

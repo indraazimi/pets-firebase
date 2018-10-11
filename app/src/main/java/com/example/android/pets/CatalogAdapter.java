@@ -41,7 +41,9 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
         return mData.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder implements
+            View.OnClickListener,
+            View.OnLongClickListener {
         final TextView nameTextView;
         final TextView breedTextView;
 
@@ -52,15 +54,22 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
 
             itemView.setFocusable(true);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View itemView) {
             mClickHandler.onItemClick(getAdapterPosition());
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            return mClickHandler.onItemLongClick(getAdapterPosition());
+        }
     }
 
     interface ClickHandler {
         void onItemClick(int position);
+        boolean onItemLongClick(int position);
     }
 }
