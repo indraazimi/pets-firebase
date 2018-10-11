@@ -21,4 +21,6 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="edit_pet">Edit Pet</string>
+    <string name="delete_pet">Delete selected pet?</string>
+    <string name="delete_pets">Delete selected pets?</string>
 </resources>

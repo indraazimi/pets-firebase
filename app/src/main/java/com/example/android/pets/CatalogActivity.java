@@ -31,6 +31,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Displays list of pets that were entered and stored in the app.
@@ -119,6 +121,10 @@ public class CatalogActivity extends AppCompatActivity {
                 case R.id.action_edit:
                     editPet();
                     return true;
+
+                case R.id.action_delete:
+                    deletePet();
+                    return true;
             }
             return false;
         }
@@ -181,6 +187,43 @@ public class CatalogActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        mActionMode.finish();
+                    }
+                });
+        builder.create().show();
+    }
+
+    private void deletePet() {
+        String message;
+        final ArrayList<Integer> selectedIds = mAdapter.getSelectedId();
+        if (selectedIds.size() == 1)
+            message = getString(R.string.delete_pet);
+        else {
+            message = getString(R.string.delete_pets);
+            Collections.sort(selectedIds, new Comparator<Integer>() {
+                @Override
+                public int compare(Integer o1, Integer o2) {
+                    return o2.compareTo(o1);
+                }
+            });
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for (int currentPetId : selectedIds) {
+                            mData.remove(currentPetId);
+                        }
+                        mAdapter.notifyDataSetChanged();
+                        mActionMode.finish();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                         mActionMode.finish();
                     }
                 });
