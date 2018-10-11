@@ -20,9 +20,12 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +38,7 @@ import java.util.ArrayList;
 public class CatalogActivity extends AppCompatActivity {
     private ArrayList<Pet> mData;
     private CatalogAdapter mAdapter;
+    private ActionMode mActionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +72,9 @@ public class CatalogActivity extends AppCompatActivity {
 
             @Override
             public boolean onItemLongClick(int position) {
-                String pet = mData.get(position).getName() + " long clicked!";
-                Toast.makeText(CatalogActivity.this, pet, Toast.LENGTH_SHORT).show();
+                if (mActionMode != null) return false;
+
+                mActionMode = CatalogActivity.this.startSupportActionMode(mActionModeCallback);
                 return true;
             }
         });
@@ -83,6 +88,29 @@ public class CatalogActivity extends AppCompatActivity {
             }
         });
     }
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.catalog_context, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return true;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+        }
+    };
 
     private void addPet() {
         final View view = getLayoutInflater().inflate(R.layout.dialog_editor, null);
