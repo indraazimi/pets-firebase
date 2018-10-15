@@ -4,6 +4,9 @@ public class Pet {
     private String name;
     private String breed;
 
+    // Firebase Realtime Database needs empty constructor
+    public Pet() { }
+
     public Pet(String name, String breed) {
         this.name = name;
         this.breed = breed;

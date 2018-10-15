@@ -17,6 +17,8 @@ package com.example.android.pets;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +32,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -44,7 +49,32 @@ public class CatalogActivity extends AppCompatActivity {
     private ArrayList<Pet> mData;
     private CatalogAdapter mAdapter;
     private ActionMode mActionMode;
+
     private DatabaseReference mDatabase;
+    private ChildEventListener childEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            mData.add(dataSnapshot.getValue(Pet.class));
+            mAdapter.updateEmptyView();
+            mAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) { }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +82,8 @@ public class CatalogActivity extends AppCompatActivity {
         setContentView(R.layout.activity_catalog);
 
         mData = new ArrayList<>();
-        mData.add(new Pet("Toto", "Terrier"));
-        mData.add(new Pet("Binx", "Bombay"));
-        mData.add(new Pet("Lady", "Cocker Spaniel"));
-        mData.add(new Pet("Cat", "Tabby"));
-        mData.add(new Pet("Baxter", "Border Terrier"));
-
         mDatabase = FirebaseDatabase.getInstance().getReference().child("daftar");
+        mDatabase.addChildEventListener(childEventListener);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view_pet);
         recyclerView.setHasFixedSize(true);
