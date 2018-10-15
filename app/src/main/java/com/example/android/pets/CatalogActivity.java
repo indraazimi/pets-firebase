@@ -30,6 +30,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,6 +44,7 @@ public class CatalogActivity extends AppCompatActivity {
     private ArrayList<Pet> mData;
     private CatalogAdapter mAdapter;
     private ActionMode mActionMode;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,8 @@ public class CatalogActivity extends AppCompatActivity {
         mData.add(new Pet("Lady", "Cocker Spaniel"));
         mData.add(new Pet("Cat", "Tabby"));
         mData.add(new Pet("Baxter", "Border Terrier"));
+
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("daftar");
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view_pet);
         recyclerView.setHasFixedSize(true);
@@ -147,12 +153,11 @@ public class CatalogActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         TextView nameTextView = view.findViewById(R.id.name_edit_text);
                         TextView breedTextView = view.findViewById(R.id.breed_edit_text);
-                        mData.add(new Pet(
+                        String key = mDatabase.push().getKey();
+                        mDatabase.child(key).setValue(new Pet(
                                 nameTextView.getText().toString(),
-                                breedTextView.getText().toString()
-                        ));
-                        mAdapter.updateEmptyView();
-                        mAdapter.notifyItemInserted(mData.size()-1);
+                                breedTextView.getText().toString())
+                        );
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
