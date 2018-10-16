@@ -39,14 +39,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Displays list of pets that were entered and stored in the app.
  */
 public class CatalogActivity extends AppCompatActivity {
     private ArrayList<Pet> mData;
+    private ArrayList<String> mDataId;
     private CatalogAdapter mAdapter;
     private ActionMode mActionMode;
 
@@ -55,18 +54,25 @@ public class CatalogActivity extends AppCompatActivity {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             mData.add(dataSnapshot.getValue(Pet.class));
+            mDataId.add(dataSnapshot.getKey());
             mAdapter.updateEmptyView();
             mAdapter.notifyDataSetChanged();
         }
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+            int pos = mDataId.indexOf(dataSnapshot.getKey());
+            mData.set(pos, dataSnapshot.getValue(Pet.class));
+            mAdapter.notifyDataSetChanged();
         }
 
         @Override
         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+            int pos = mDataId.indexOf(dataSnapshot.getKey());
+            mDataId.remove(pos);
+            mData.remove(pos);
+            mAdapter.updateEmptyView();
+            mAdapter.notifyDataSetChanged();
         }
 
         @Override
@@ -82,6 +88,7 @@ public class CatalogActivity extends AppCompatActivity {
         setContentView(R.layout.activity_catalog);
 
         mData = new ArrayList<>();
+        mDataId = new ArrayList<>();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("daftar");
         mDatabase.addChildEventListener(childEventListener);
 
@@ -97,11 +104,12 @@ public class CatalogActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(divider);
 
         View emptyView = findViewById(R.id.empty_view);
-        mAdapter = new CatalogAdapter(this, mData, emptyView, new CatalogAdapter.ClickHandler() {
+        mAdapter = new CatalogAdapter(this, mData, mDataId, emptyView,
+                new CatalogAdapter.ClickHandler() {
             @Override
             public void onItemClick(int position) {
                 if (mActionMode != null) {
-                    mAdapter.toggleSelection(position);
+                    mAdapter.toggleSelection(mDataId.get(position));
                     if (mAdapter.selectionCount() == 0)
                         mActionMode.finish();
                     else
@@ -117,7 +125,7 @@ public class CatalogActivity extends AppCompatActivity {
             public boolean onItemLongClick(int position) {
                 if (mActionMode != null) return false;
 
-                mAdapter.toggleSelection(position);
+                mAdapter.toggleSelection(mDataId.get(position));
                 mActionMode = CatalogActivity.this.startSupportActionMode(mActionModeCallback);
                 return true;
             }
@@ -195,7 +203,8 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void editPet() {
-        final Pet selectedPet = mData.get(mAdapter.getSelectedId().get(0));
+        final String currentPetId = mAdapter.getSelectedId().get(0);
+        Pet selectedPet = mData.get(mDataId.indexOf(currentPetId));
 
         View view = getLayoutInflater().inflate(R.layout.dialog_editor, null);
         final TextView nameTextView = view.findViewById(R.id.name_edit_text);
@@ -209,9 +218,10 @@ public class CatalogActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        selectedPet.setName(nameTextView.getText().toString());
-                        selectedPet.setBreed(breedTextView.getText().toString());
-                        mAdapter.notifyItemChanged(mAdapter.getSelectedId().get(0));
+                        mDatabase.child(currentPetId).setValue(new Pet(
+                                nameTextView.getText().toString(),
+                                breedTextView.getText().toString())
+                        );
                         mActionMode.finish();
                     }
                 })
@@ -226,30 +236,17 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void deletePet() {
-        String message;
-        final ArrayList<Integer> selectedIds = mAdapter.getSelectedId();
-        if (selectedIds.size() == 1)
-            message = getString(R.string.delete_pet);
-        else {
-            message = getString(R.string.delete_pets);
-            Collections.sort(selectedIds, new Comparator<Integer>() {
-                @Override
-                public int compare(Integer o1, Integer o2) {
-                    return o2.compareTo(o1);
-                }
-            });
-        }
+        final ArrayList<String> selectedIds = mAdapter.getSelectedId();
+        int message = selectedIds.size() == 1 ? R.string.delete_pet : R.string.delete_pets;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setMessage(message)
                 .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        for (int currentPetId : selectedIds) {
-                            mData.remove(currentPetId);
+                        for (String currentPetId : selectedIds) {
+                            mDatabase.child(currentPetId).removeValue();
                         }
-                        mAdapter.notifyDataSetChanged();
-                        mAdapter.updateEmptyView();
                         mActionMode.finish();
                     }
                 })

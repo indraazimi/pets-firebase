@@ -14,13 +14,15 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
     private ClickHandler mClickHandler;
     private Context mContext;
     private ArrayList<Pet> mData;
-    private ArrayList<Integer> mSelectedId;
+    private ArrayList<String> mDataId;
+    private ArrayList<String> mSelectedId;
     private View mEmptyView;
 
-    public CatalogAdapter(Context context, ArrayList<Pet> data,
+    public CatalogAdapter(Context context, ArrayList<Pet> data, ArrayList<String> dataId,
                           View emptyView, ClickHandler handler) {
         mContext = context;
         mData = data;
+        mDataId = dataId;
         mEmptyView = emptyView;
         mClickHandler = handler;
         mSelectedId = new ArrayList<>();
@@ -46,7 +48,7 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
         Pet pet = mData.get(position);
         holder.nameTextView.setText(pet.getName());
         holder.breedTextView.setText(pet.getBreed());
-        holder.itemView.setSelected(mSelectedId.contains(position));
+        holder.itemView.setSelected(mSelectedId.contains(mDataId.get(position)));
     }
 
     @Override
@@ -54,9 +56,9 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
         return mData.size();
     }
 
-    public void toggleSelection(int dataId) {
+    public void toggleSelection(String dataId) {
         if (mSelectedId.contains(dataId))
-            mSelectedId.remove(Integer.valueOf(dataId));
+            mSelectedId.remove(dataId);
         else
             mSelectedId.add(dataId);
         notifyDataSetChanged();
@@ -71,7 +73,7 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
         notifyDataSetChanged();
     }
 
-    public ArrayList<Integer> getSelectedId() {
+    public ArrayList<String> getSelectedId() {
         return mSelectedId;
     }
 
